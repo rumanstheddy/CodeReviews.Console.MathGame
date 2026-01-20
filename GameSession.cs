@@ -14,36 +14,41 @@ class GameSession
 
     public void ShowMenu()
     {
-        if (_isFirstRound)
-        {
-            _isFirstRound = false;
-            Console.WriteLine("WELCOME TO THE MATH QUIZ!");
-            StartGame();
-        }
+        int selectedOption = -1;
 
-        Console.WriteLine("Choose an option:");
-        Console.WriteLine("1. Start another round");
-        Console.WriteLine("2. Check history of scores");
-        Console.WriteLine("3. Quit");
-
-        int selectedOption = int.Parse(Console.ReadLine()!);
-        switch (selectedOption)
+        while (selectedOption != 3)
         {
-            case 1:
+            if (_isFirstRound)
+            {
+                _isFirstRound = false;
+                Console.WriteLine("WELCOME TO THE MATH QUIZ!");
                 StartGame();
-                break;
-            case 2:
-                ShowHistory();
-                break;
-            case 3:
-                Environment.Exit(0);
-                break;
-            default:
-                ShowMenu();
-                break;
+            }
+
+            Console.WriteLine("Choose an option:");
+            Console.WriteLine("1. Start another round");
+            Console.WriteLine("2. Check history of scores");
+            Console.WriteLine("3. Quit");
+            Console.WriteLine();
+
+            var menuOptionsSet = new HashSet<int>(){1, 2, 3};
+
+            _ = int.TryParse(Console.ReadLine()!, out selectedOption);
+            while (selectedOption == 0 || !menuOptionsSet.Contains(selectedOption))
+            {
+                Console.WriteLine("Invalid option selected. Please try again.");
+                Console.WriteLine("1. Start another round");
+                Console.WriteLine("2. Check history of scores");
+                Console.WriteLine("3. Quit");
+                Console.WriteLine();
+                _ = int.TryParse(Console.ReadLine()!, out selectedOption);
+            }
+
+            if (selectedOption == 1) StartGame();
+            else if (selectedOption == 2) ShowHistory();
         }
 
-        Console.WriteLine();
+        Environment.Exit(0);
     }
 
     public void StartGame()
@@ -56,7 +61,20 @@ class GameSession
         {
             Console.WriteLine($"{o} : {OptionsDictionary[o]}");
         }
-        int option = int.Parse(Console.ReadLine()!);
+
+        var optionsSet = new HashSet<int>(OptionsDictionary.Keys);
+        _ = int.TryParse(Console.ReadLine()!, out int option);
+
+        while (option == 0 || !optionsSet.Contains(option))
+        {
+            Console.WriteLine("Invalid option selected. Please try again.");
+            foreach (int o in OptionsDictionary.Keys)
+            {
+                Console.WriteLine($"{o} : {OptionsDictionary[o]}");
+            }
+            _ = int.TryParse(Console.ReadLine()!, out option);
+        }
+
         char operation = OptionsDictionary[option];
 
         GameRound gameRound = new(operation);
@@ -68,7 +86,22 @@ class GameSession
             (int, int) q = gameRound.Questions[i];
             Console.WriteLine();
             Console.WriteLine($"What is {q.Item1} {operation} {q.Item2}?");
-            int response = int.Parse(Console.ReadLine()!);
+
+            if (!int.TryParse(Console.ReadLine()!, out int response))
+            {
+                response = -1;
+            }
+
+            while (response == -1)
+            {
+                Console.WriteLine();
+                Console.WriteLine($"Invalid response. Please enter a valid number.");
+                if (!int.TryParse(Console.ReadLine()!, out response))
+                {
+                    response = -1;
+                }
+            }
+
             if (response == gameRound.Answers[i])
             {
                 gameRound.TotalScore += 1;
@@ -81,8 +114,6 @@ class GameSession
         Console.WriteLine("******************************* ROUND ENDED *******************************");
         Console.WriteLine();
         History.Add(gameRound);
-
-        ShowMenu();
     }
 
     public void ShowHistory()
