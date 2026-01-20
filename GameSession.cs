@@ -31,7 +31,7 @@ class GameSession
             Console.WriteLine("3. Quit");
             Console.WriteLine();
 
-            var menuOptionsSet = new HashSet<int>(){1, 2, 3};
+            var menuOptionsSet = new HashSet<int>() { 1, 2, 3 };
 
             _ = int.TryParse(Console.ReadLine()!, out selectedOption);
             while (selectedOption == 0 || !menuOptionsSet.Contains(selectedOption))
@@ -47,8 +47,6 @@ class GameSession
             if (selectedOption == 1) StartGame();
             else if (selectedOption == 2) ShowHistory();
         }
-
-        Environment.Exit(0);
     }
 
     public void StartGame()
