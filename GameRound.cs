@@ -33,10 +33,9 @@ class GameRound
             }
             else if (Operation == '/')
             {
-                while (a % b != 0)
-                {
-                    b = rnd.Next(2, a);
-                }
+                int k = rnd.Next(1, 21);
+                b = rnd.Next(2, 21);
+                a = b * k;
             }
 
             var question = (a, b);
