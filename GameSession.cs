@@ -125,7 +125,7 @@ class GameSession
 
         Console.WriteLine();
         Console.WriteLine("Press any key to exit the history section...");
-        Console.ReadLine();
+        Console.ReadKey();
     }
 
     public GameSession()
